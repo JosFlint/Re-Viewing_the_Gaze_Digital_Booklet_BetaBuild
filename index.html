@@ -79,7 +79,7 @@
             font-size: 24px;
             cursor: pointer;
             padding: 10px;
-            z-index: 12; /* Increased z-index to ensure it works with overlay */
+            z-index: 12;
             transition: background 0.3s ease;
         }
         .arrow:hover {
@@ -115,7 +115,7 @@
             background-size: cover;
             background-position: center;
             mix-blend-mode: multiply;
-            z-index: 10; /* Behind arrow buttons */
+            z-index: 10;
         }
         #menuButton {
             position: absolute;
@@ -129,31 +129,60 @@
             cursor: pointer;
             z-index: 11;
         }
-        #infoButton {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            border: none;
+        #menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
             color: white;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 12;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.5s ease;
+            z-index: 10;
         }
-        #darkModeButton {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.5);
+        #menu.open {
+            height: 100vh;
+        }
+        #menuContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        #menuContent a {
             color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 12;
+            text-decoration: none;
+            font-size: 24px;
+            margin: 10px;
+        }
+        #infoPopup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 11;
+            display: none;
+        }
+        #infoPopupContent {
+            margin: 20px;
+            text-align: center;
+        }
+        #infoPopupContent h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        #infoPopupContent p {
+            font-size: 18px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -182,6 +211,22 @@
         <button id="menuButton" onclick="toggleMenu()">Menu</button>
         <!-- Information Button -->
         <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
+        <!-- Menu -->
+        <div id="menu">
+            <div id="menuContent">
+                <a href="https://josflint.com">Artist Website</a>
+                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE/">Virtual Tour</a>
+                <a href="https://sdcapgshow2024.lboro.ac.uk/?post_type=student&p=336">MA Website</a>
+                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE_Filter/">Camera Filter</a>
+            </div>
+        </div>
+        <!-- Information Popup -->
+        <div id="infoPopup">
+            <div id="infoPopupContent">
+                <h1>About the Booklet</h1>
+                <p>This interactive booklet explores themes of identity, perception, and societal norms. Use the arrows or swipe gestures to navigate through the pages.</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -257,6 +302,16 @@
             isDarkMode = !isDarkMode;
             body.style.background = isDarkMode ? "black" : "white";
             body.style.color = isDarkMode ? "white" : "black";
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('open');
+        }
+
+        function toggleInfo() {
+            const infoPopup = document.getElementById('infoPopup');
+            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
         }
 
         window.addEventListener("resize", updatePages);
