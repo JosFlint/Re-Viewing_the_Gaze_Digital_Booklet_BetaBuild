@@ -230,93 +230,106 @@
     </div>
 
     <script>
-        let currentPage = 1;
-        const totalPages = 24;
-        let isDarkMode = false;
+    let currentPage = 1;
+    const totalPages = 24;
+    let isDarkMode = false;
 
-        function enterFullScreen() {
+    function enterFullScreen() {
+        const cover = document.getElementById('cover-container');
+        const bookletContainer = document.getElementById('booklet-container');
+
+        cover.style.display = 'none';
+        bookletContainer.style.display = 'flex';
+
+        const elem = document.documentElement;
+        if (!document.fullscreenElement) {
+            elem.requestFullscreen().catch((err) => {
+                console.error(`Error enabling full-screen mode: ${err.message}`);
+            });
+        }
+
+        updatePages();
+    }
+
+    function isPortraitMode() {
+        return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+    }
+
+    function updatePages() {
+        const leftPage = document.getElementById('left-page');
+        const rightPage = document.getElementById('right-page');
+
+        if (currentPage === 1) {
+            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
+            rightPage.style.visibility = 'hidden';
+        } else if (isPortraitMode()) {
+            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+            leftPage.classList.add("portrait");
+            rightPage.style.visibility = 'hidden';
+        } else {
+            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+            leftPage.classList.remove("portrait");
+            if (currentPage < totalPages) {
+                rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
+                rightPage.style.visibility = 'visible';
+            } else {
+                rightPage.style.visibility = 'hidden';
+            }
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePages();
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePages();
+        }
+    }
+
+    function toggleOverlay() {
+        const overlay = document.getElementById('overlay-image');
+        overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
+    }
+
+    function toggleDarkMode() {
+        const body = document.body;
+        isDarkMode = !isDarkMode;
+        body.style.background = isDarkMode ? "black" : "white";
+        body.style.color = isDarkMode ? "white" : "black";
+    }
+
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        menu.classList.toggle('open');
+    }
+
+    function toggleInfo() {
+        const infoPopup = document.getElementById('infoPopup');
+        infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function exitToCover() {
+        if (!document.fullscreenElement) {
             const cover = document.getElementById('cover-container');
             const bookletContainer = document.getElementById('booklet-container');
 
-            cover.style.display = 'none';
-            bookletContainer.style.display = 'flex';
-
-            const elem = document.documentElement;
-            if (!document.fullscreenElement) {
-                elem.requestFullscreen().catch((err) => {
-                    console.error(`Error enabling full-screen mode: ${err.message}`);
-                });
-            }
-
-            updatePages();
+            cover.style.display = 'flex';
+            bookletContainer.style.display = 'none';
+            currentPage = 1; // Reset to the first page
         }
+    }
 
-        function isPortraitMode() {
-            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-        }
+    window.addEventListener("resize", updatePages);
+    document.addEventListener("fullscreenchange", exitToCover);
 
-        function updatePages() {
-            const leftPage = document.getElementById('left-page');
-            const rightPage = document.getElementById('right-page');
+    updatePages();
+</script>
 
-            if (currentPage === 1) {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
-                rightPage.style.visibility = 'hidden';
-            } else if (isPortraitMode()) {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-                leftPage.classList.add("portrait");
-                rightPage.style.visibility = 'hidden';
-            } else {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-                leftPage.classList.remove("portrait");
-                if (currentPage < totalPages) {
-                    rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
-                    rightPage.style.visibility = 'visible';
-                } else {
-                    rightPage.style.visibility = 'hidden';
-                }
-            }
-        }
-
-        function prevPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePages();
-            }
-        }
-
-        function nextPage() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePages();
-            }
-        }
-
-        function toggleOverlay() {
-            const overlay = document.getElementById('overlay-image');
-            overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
-        }
-
-        function toggleDarkMode() {
-            const body = document.body;
-            isDarkMode = !isDarkMode;
-            body.style.background = isDarkMode ? "black" : "white";
-            body.style.color = isDarkMode ? "white" : "black";
-        }
-
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('open');
-        }
-
-        function toggleInfo() {
-            const infoPopup = document.getElementById('infoPopup');
-            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        window.addEventListener("resize", updatePages);
-
-        updatePages();
-    </script>
 </body>
 </html>
