@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Booklet</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        img {
+            max-width: 90%;
+            height: auto;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background: #007BFF;
+            color: #fff;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Booklet</h1>
+    <div class="navigation">
+        <button id="prev-btn" onclick="prevPage()">Previous</button>
+        <button id="next-btn" onclick="nextPage()">Next</button>
+    </div>
+    <img id="booklet-page" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Booklet Page">
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 24; // Total number of pages in the booklet
+
+        function updatePage() {
+            const image = document.getElementById('booklet-page');
+            image.src = `Fine Art Catalogue (Digital)_Page_${currentPage}.png`;
+
+            // Enable or disable buttons based on the current page
+            document.getElementById('prev-btn').disabled = currentPage === 1;
+            document.getElementById('next-btn').disabled = currentPage === totalPages;
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePage();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePage();
+            }
+        }
+    </script>
+</body>
+</html>
