@@ -63,9 +63,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             object-fit: contain;
         }
-        .page.right {
-            transform-origin: left center;
-        }
         .arrow {
             position: absolute;
             top: 50%;
@@ -78,9 +75,6 @@
             cursor: pointer;
             border-radius: 50%;
             z-index: 10;
-        }
-        .arrow:hover {
-            background: rgba(0, 0, 0, 1);
         }
         .arrow.left {
             left: 10px;
@@ -108,12 +102,84 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             display: none;
-            background-image: url('Overlay.png');
+            background-image: url('Overlay.png'); /* Updated to use local file */
             background-size: cover;
             background-position: center;
-            mix-blend-mode: multiply;
             z-index: 10;
-            pointer-events: none;
+        }
+        /* Information button */
+        #infoButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 12;
+        }
+        /* Information popup */
+        #infoPopup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 9;
+            display: none;
+        }
+        /* Menu button */
+        #menuButton {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 11;
+        }
+        /* Menu */
+        #menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.5s ease;
+            z-index: 10;
+        }
+        #menu.open {
+            height: 100vh;
+        }
+        #menuContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+        #menuContent a {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            margin: 10px;
         }
     </style>
 </head>
@@ -134,8 +200,28 @@
         <button class="arrow right" onclick="nextPage()">&#9654;</button>
         <!-- Overlay Button -->
         <button id="overlayButton" onclick="toggleOverlay()">Overlay</button>
+        <!-- Information Button -->
+        <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
+        <!-- Menu Button -->
+        <button id="menuButton" onclick="toggleMenu()">Menu</button>
         <!-- Overlay Image -->
         <div id="overlay-image"></div>
+        <!-- Information Popup -->
+        <div id="infoPopup">
+            <div>
+                <h1>Information</h1>
+                <p>This is some information about the booklet.</p>
+            </div>
+        </div>
+        <!-- Menu -->
+        <div id="menu">
+            <div id="menuContent">
+                <a href="https://josflint.com">Artist Website</a>
+                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE/">Virtual Tour</a>
+                <a href="https://sdcapgshow2024.lboro.ac.uk/?post_type=student&p=336">MA Website</a>
+                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE_Filter/">Camera Filter</a>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -166,17 +252,15 @@
             const rightPage = document.getElementById('right-page');
             
             if (currentPage === 1) {
-                // Show the cover page as a single page
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
                 rightPage.style.visibility = 'hidden';
             } else {
-                // Show two-page spread for other pages
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
                 if (currentPage < totalPages) {
                     rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
                     rightPage.style.visibility = 'visible';
                 } else {
-                    rightPage.style.visibility = 'hidden'; // Hide right page if no more pages
+                    rightPage.style.visibility = 'hidden';
                 }
             }
         }
@@ -197,14 +281,20 @@
 
         function toggleOverlay() {
             const overlay = document.getElementById('overlay-image');
-            if (overlay.style.display === 'none' || overlay.style.display === '') {
-                overlay.style.display = 'block';
-            } else {
-                overlay.style.display = 'none';
-            }
+            overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
         }
 
-        // Initialize the pages
+        function toggleInfo() {
+            const infoPopup = document.getElementById('infoPopup');
+            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('open');
+        }
+
+        // Initialize pages
         updatePages();
     </script>
 </body>
