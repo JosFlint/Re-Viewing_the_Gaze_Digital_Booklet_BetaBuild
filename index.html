@@ -14,7 +14,7 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background: #f8f9fa;
+            background: black;
         }
         .booklet-container {
             display: flex;
@@ -32,10 +32,10 @@
             align-items: center;
         }
         .page {
-            max-width: 90%;
+            max-width: 100%;
             height: auto;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #333;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
             transition: transform 0.6s ease-in-out;
             backface-visibility: hidden;
             transform-origin: right center;
@@ -47,8 +47,8 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
+            background: rgba(255, 255, 255, 0.8);
+            color: black;
             border: none;
             font-size: 24px;
             padding: 10px;
@@ -57,7 +57,7 @@
             z-index: 10;
         }
         .arrow:hover {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(255, 255, 255, 1);
         }
         .arrow.left {
             left: -50px;
@@ -75,13 +75,23 @@
             color: white;
             border-radius: 5px;
         }
-        @media (min-width: 768px) {
+        @media (max-width: 768px) {
             .booklet {
-                flex-direction: row;
+                flex-direction: column;
             }
             .page {
-                width: 45%;
-                margin: 0 5px;
+                max-width: 90%;
+                margin: 5px 0;
+            }
+            .arrow.left {
+                left: 10px;
+                top: 80%;
+                transform: translateY(-50%);
+            }
+            .arrow.right {
+                right: 10px;
+                top: 80%;
+                transform: translateY(-50%);
             }
         }
     </style>
