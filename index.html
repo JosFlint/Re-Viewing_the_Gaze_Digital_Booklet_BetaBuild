@@ -9,6 +9,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background: white;
+            color: black;
             overflow: hidden;
         }
         .cover-container {
@@ -67,6 +68,7 @@
         .page.portrait {
             max-width: 90%;
             max-height: 95%;
+            margin: 0 auto; /* Center the page horizontally */
         }
         .arrow {
             position: absolute;
@@ -78,7 +80,7 @@
             font-size: 24px;
             cursor: pointer;
             padding: 10px;
-            z-index: 10;
+            z-index: 12;
             transition: background 0.3s ease;
         }
         .arrow:hover {
@@ -154,7 +156,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            z-index: 9;
+            z-index: 11;
             display: none;
         }
         #infoPopupContent {
@@ -168,21 +170,6 @@
         #infoPopupContent p {
             font-size: 18px;
             line-height: 1.5;
-        }
-        #infoPopupClose {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 12;
-        }
-        #infoPopupClose:hover {
-            background: rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
@@ -215,13 +202,13 @@
                 <h1>About the Booklet</h1>
                 <p>This interactive booklet explores themes of identity, perception, and societal norms. Use the arrows or swipe gestures to navigate through the pages.</p>
             </div>
-            <button id="infoPopupClose" onclick="toggleInfo()">Close</button>
         </div>
     </div>
 
     <script>
         let currentPage = 1;
         const totalPages = 24;
+        let isDarkMode = false;
 
         function enterFullScreen() {
             const cover = document.getElementById('cover-container');
