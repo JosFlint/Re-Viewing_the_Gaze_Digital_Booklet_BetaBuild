@@ -14,13 +14,27 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
+            background: #f8f9fa;
+        }
+        .booklet {
+            position: relative;
+            perspective: 1000px;
+            margin-bottom: 20px;
         }
         img {
             max-width: 90%;
             height: auto;
-            margin: 20px 0;
             border: 1px solid #ddd;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.6s ease-in-out;
+            backface-visibility: hidden;
+            transform-origin: right center;
+        }
+        img.flip-next {
+            transform: rotateY(-180deg);
+        }
+        img.flip-prev {
+            transform: rotateY(180deg);
         }
         .navigation {
             display: flex;
@@ -43,7 +57,9 @@
     </style>
 </head>
 <body>
-    <img id="booklet-page" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Booklet Page">
+    <div class="booklet">
+        <img id="booklet-page" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Booklet Page">
+    </div>
     <div class="navigation">
         <button id="prev-btn" onclick="prevPage()">Previous</button>
         <button id="next-btn" onclick="nextPage()">Next</button>
@@ -52,22 +68,30 @@
     <script>
         let currentPage = 1;
         const totalPages = 24; // Total number of pages in the booklet
+        const image = document.getElementById('booklet-page');
 
-        // Function to update the displayed page
-        function updatePage() {
-            const image = document.getElementById('booklet-page');
-            image.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+        // Function to update the displayed page with animation
+        function updatePage(direction) {
+            // Add flip class based on the direction
+            image.classList.remove('flip-next', 'flip-prev');
+            if (direction === 'next') {
+                image.classList.add('flip-next');
+            } else if (direction === 'prev') {
+                image.classList.add('flip-prev');
+            }
 
-            // Enable or disable buttons based on the current page
-            document.getElementById('prev-btn').disabled = currentPage === 1;
-            document.getElementById('next-btn').disabled = currentPage === totalPages;
+            // Wait for the animation to complete before changing the image
+            setTimeout(() => {
+                image.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                image.classList.remove('flip-next', 'flip-prev');
+            }, 600); // Matches the duration of the CSS transition
         }
 
         // Navigate to the previous page
         function prevPage() {
             if (currentPage > 1) {
                 currentPage--;
-                updatePage();
+                updatePage('prev');
             }
         }
 
@@ -75,7 +99,7 @@
         function nextPage() {
             if (currentPage < totalPages) {
                 currentPage++;
-                updatePage();
+                updatePage('next');
             }
         }
 
