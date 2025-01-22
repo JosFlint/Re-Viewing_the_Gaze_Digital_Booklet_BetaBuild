@@ -19,9 +19,11 @@
         .booklet {
             position: relative;
             perspective: 1000px;
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        img {
+        .page {
             max-width: 90%;
             height: auto;
             border: 1px solid #ddd;
@@ -30,16 +32,19 @@
             backface-visibility: hidden;
             transform-origin: right center;
         }
-        img.flip-next {
+        .page.right {
+            transform-origin: left center;
+        }
+        .page.flip-next {
             transform: rotateY(-180deg);
         }
-        img.flip-prev {
+        .page.flip-prev {
             transform: rotateY(180deg);
         }
         .navigation {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
         button {
             padding: 10px 20px;
@@ -54,11 +59,21 @@
             background: #ccc;
             cursor: not-allowed;
         }
+        @media (min-width: 768px) {
+            .booklet {
+                flex-direction: row;
+            }
+            .page {
+                width: 45%;
+                margin: 0 5px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="booklet">
-        <img id="booklet-page" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Booklet Page">
+        <img id="left-page" class="page left" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Left Page">
+        <img id="right-page" class="page right" src="Re-Viewing the Gaze Catalogue_Page_02.png" alt="Right Page">
     </div>
     <div class="navigation">
         <button id="prev-btn" onclick="prevPage()">Previous</button>
@@ -68,38 +83,41 @@
     <script>
         let currentPage = 1;
         const totalPages = 24; // Total number of pages in the booklet
-        const image = document.getElementById('booklet-page');
 
-        // Function to update the displayed page with animation
-        function updatePage(direction) {
-            // Add flip class based on the direction
-            image.classList.remove('flip-next', 'flip-prev');
-            if (direction === 'next') {
-                image.classList.add('flip-next');
-            } else if (direction === 'prev') {
-                image.classList.add('flip-prev');
+        // Function to update the displayed pages
+        function updatePages() {
+            const leftPage = document.getElementById('left-page');
+            const rightPage = document.getElementById('right-page');
+            
+            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+            
+            // Ensure we don't exceed the total number of pages
+            if (currentPage < totalPages) {
+                rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
+                rightPage.style.visibility = 'visible';
+            } else {
+                // Hide the right page if it's the last page
+                rightPage.style.visibility = 'hidden';
             }
 
-            // Wait for the animation to complete before changing the image
-            setTimeout(() => {
-                image.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-                image.classList.remove('flip-next', 'flip-prev');
-            }, 600); // Matches the duration of the CSS transition
+            // Enable or disable buttons based on the current page
+            document.getElementById('prev-btn').disabled = currentPage === 1;
+            document.getElementById('next-btn').disabled = currentPage >= totalPages;
         }
 
-        // Navigate to the previous page
         function prevPage() {
             if (currentPage > 1) {
-                currentPage--;
-                updatePage('prev');
+                currentPage -= 2; // Move back two pages
+                if (currentPage < 1) currentPage = 1; // Ensure we don't go below page 1
+                updatePages();
             }
         }
 
-        // Navigate to the next page
         function nextPage() {
             if (currentPage < totalPages) {
-                currentPage++;
-                updatePage('next');
+                currentPage += 2; // Move forward two pages
+                if (currentPage > totalPages) currentPage = totalPages; // Ensure we don't exceed total pages
+                updatePages();
             }
         }
 
@@ -122,6 +140,9 @@
                 prevPage();
             }
         });
+
+        // Initialize the pages
+        updatePages();
     </script>
 </body>
 </html>
