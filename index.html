@@ -45,10 +45,8 @@
             align-items: center;
             position: relative;
             width: 100%;
-            max-width: 1200px;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
             height: 100vh;
+            overflow: hidden;
         }
         .booklet {
             position: relative;
@@ -93,15 +91,19 @@
         .arrow.right {
             right: 10px;
         }
-        .fullscreen-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            background: #007BFF;
-            color: white;
-            border-radius: 5px;
+        @media (max-width: 768px) and (orientation: portrait) {
+            .page {
+                max-width: 90%;
+            }
+            .page.right {
+                display: none; /* Hide the right page in portrait mode */
+            }
+        }
+        @media (max-width: 768px) and (orientation: landscape) {
+            .page {
+                max-width: 40%;
+                margin: 0 5px;
+            }
         }
     </style>
 </head>
@@ -125,6 +127,10 @@
     <script>
         let currentPage = 1;
         const totalPages = 24; // Total number of pages in the booklet
+
+        function isPortraitMode() {
+            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+        }
 
         function enterFullScreen() {
             const cover = document.getElementById('cover-container');
@@ -153,6 +159,10 @@
                 // Show the cover page as a single page
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
                 rightPage.style.visibility = 'hidden';
+            } else if (isPortraitMode()) {
+                // Show only the left page in portrait mode
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                rightPage.style.visibility = 'hidden';
             } else {
                 // Show two-page spread for other pages
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
@@ -167,27 +177,36 @@
 
         function prevPage() {
             if (currentPage > 1) {
-                if (currentPage === 2) {
-                    // Special case: go back to the cover page
-                    currentPage = 1;
-                } else {
-                    currentPage -= 2; // Move back two pages
-                }
+                currentPage--;
                 updatePages();
             }
         }
 
         function nextPage() {
             if (currentPage < totalPages) {
-                if (currentPage === 1) {
-                    // Special case: move from cover page to first spread
-                    currentPage = 2;
-                } else {
-                    currentPage += 2; // Move forward two pages
-                }
+                currentPage++;
                 updatePages();
             }
         }
+
+        function exitToCover() {
+            if (!document.fullscreenElement) {
+                const cover = document.getElementById('cover-container');
+                const booklet = document.getElementById('booklet-container');
+
+                // Show the cover and hide the booklet
+                cover.style.display = 'flex';
+                booklet.style.display = 'none';
+
+                currentPage = 1; // Reset to cover page
+            }
+        }
+
+        // Listen for full-screen exit
+        document.addEventListener("fullscreenchange", exitToCover);
+
+        // Recalculate layout on resize
+        window.addEventListener("resize", updatePages);
 
         // Initialize the pages
         updatePages();
