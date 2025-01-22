@@ -388,6 +388,10 @@
 
     // Add event listener for resizing to ensure layout adjusts
     window.addEventListener("resize", updatePages);
+        
+// Add event listener for fullscreen changes
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+
 // Function to handle exiting full-screen mode and returning to the cover page
 function handleFullscreenChange() {
     if (!document.fullscreenElement) { // If not in full-screen mode
@@ -398,6 +402,9 @@ function handleFullscreenChange() {
         currentPage = 1; // Reset to the first page
     }
 }
+
+updatePages(); // Update pages when the booklet starts
+
         
     updatePages(); // Update pages when the booklet starts
 </script>
