@@ -6,18 +6,41 @@
     <title>Re-Viewing the Gaze Digital Booklet</title>
     <style>
         body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: white;
+            overflow: hidden;
+        }
+        .cover-container {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            margin: 0;
-            font-family: Arial, sans-serif;
             height: 100vh;
-            overflow: hidden;
-            background: white;
+            background: black;
+            color: white;
+        }
+        .cover-container img {
+            max-width: 90%;
+            max-height: 80%;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
+        }
+        .start-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .start-button:hover {
+            background: #0056b3;
         }
         .booklet-container {
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             position: relative;
@@ -25,6 +48,7 @@
             max-width: 1200px;
             aspect-ratio: 16 / 9;
             overflow: hidden;
+            height: 100vh;
         }
         .booklet {
             position: relative;
@@ -79,26 +103,16 @@
             color: white;
             border-radius: 5px;
         }
-        @media (max-width: 768px) {
-            .booklet {
-                flex-direction: column;
-            }
-            .page {
-                max-width: 90%;
-                margin: 5px 0;
-            }
-            .arrow.left {
-                left: 10px;
-                top: 90%;
-            }
-            .arrow.right {
-                right: 10px;
-                top: 90%;
-            }
-        }
     </style>
 </head>
 <body>
+    <!-- Cover Screen -->
+    <div class="cover-container" id="cover-container">
+        <img src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Cover Page">
+        <button class="start-button" onclick="enterFullScreen()">Start the Booklet</button>
+    </div>
+
+    <!-- Booklet Display -->
     <div class="booklet-container" id="booklet-container">
         <button class="arrow left" onclick="prevPage()">&#9664;</button>
         <div class="booklet">
@@ -107,13 +121,30 @@
         </div>
         <button class="arrow right" onclick="nextPage()">&#9654;</button>
     </div>
-    <button class="fullscreen-button" onclick="toggleFullScreen()">Toggle Fullscreen</button>
 
     <script>
         let currentPage = 1;
         const totalPages = 24; // Total number of pages in the booklet
 
-        // Function to update the displayed pages
+        function enterFullScreen() {
+            const cover = document.getElementById('cover-container');
+            const booklet = document.getElementById('booklet-container');
+
+            // Hide the cover and show the booklet
+            cover.style.display = 'none';
+            booklet.style.display = 'flex';
+
+            // Request full screen
+            const elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch((err) => {
+                    console.error(`Error trying to enable full-screen mode: ${err.message}`);
+                });
+            }
+
+            updatePages();
+        }
+
         function updatePages() {
             const leftPage = document.getElementById('left-page');
             const rightPage = document.getElementById('right-page');
@@ -155,36 +186,6 @@
                     currentPage += 2; // Move forward two pages
                 }
                 updatePages();
-            }
-        }
-
-        // Add swipe functionality for mobile devices
-        let startX = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        });
-
-        document.addEventListener('touchend', (e) => {
-            const endX = e.changedTouches[0].clientX;
-            const deltaX = startX - endX;
-
-            // Swipe threshold to detect gestures
-            const threshold = 50;
-            if (deltaX > threshold && currentPage < totalPages) {
-                nextPage();
-            } else if (deltaX < -threshold && currentPage > 1) {
-                prevPage();
-            }
-        });
-
-        // Toggle Fullscreen Mode
-        function toggleFullScreen() {
-            const elem = document.getElementById('booklet-container');
-            if (!document.fullscreenElement) {
-                elem.requestFullscreen();
-            } else {
-                document.exitFullscreen();
             }
         }
 
