@@ -64,6 +64,10 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             object-fit: contain;
         }
+        .page.portrait {
+            max-width: 90%;
+            max-height: 95%;
+        }
         .arrow {
             position: absolute;
             top: 50%;
@@ -138,33 +142,47 @@
             cursor: pointer;
             z-index: 12;
         }
-        #menu {
+        #infoPopup {
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            height: 0;
-            overflow: hidden;
-            transition: height 0.5s ease;
-            z-index: 10;
-        }
-        #menu.open {
+            width: 100vw;
             height: 100vh;
-        }
-        #menuContent {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
+            text-align: center;
+            z-index: 9;
+            display: none;
         }
-        #menuContent a {
-            color: white;
-            text-decoration: none;
-            font-size: 24px;
-            margin: 10px;
+        #infoPopupContent {
+            margin: 20px;
+            text-align: center;
+        }
+        #infoPopupContent h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        #infoPopupContent p {
+            font-size: 18px;
+            line-height: 1.5;
+        }
+        #infoPopupClose {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 12;
+        }
+        #infoPopupClose:hover {
+            background: rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
@@ -187,19 +205,17 @@
         <button id="overlayButton" onclick="toggleOverlay()">Overlay</button>
         <!-- Overlay Image -->
         <div id="overlay-image"></div>
-        
         <!-- Menu Button -->
         <button id="menuButton" onclick="toggleMenu()">Menu</button>
         <!-- Information Button -->
         <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
-        <!-- Menu -->
-        <div id="menu">
-            <div id="menuContent">
-                <a href="https://josflint.com">Artist Website</a>
-                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE/">Virtual Tour</a>
-                <a href="https://sdcapgshow2024.lboro.ac.uk/?post_type=student&p=336">MA Website</a>
-                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE_Filter/">Camera Filter</a>
+        <!-- Information Popup -->
+        <div id="infoPopup">
+            <div id="infoPopupContent">
+                <h1>About the Booklet</h1>
+                <p>This interactive booklet explores themes of identity, perception, and societal norms. Use the arrows or swipe gestures to navigate through the pages.</p>
             </div>
+            <button id="infoPopupClose" onclick="toggleInfo()">Close</button>
         </div>
     </div>
 
@@ -237,9 +253,11 @@
                 rightPage.style.visibility = 'hidden';
             } else if (isPortraitMode()) {
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.classList.add("portrait");
                 rightPage.style.visibility = 'hidden';
             } else {
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.classList.remove("portrait");
                 if (currentPage < totalPages) {
                     rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
                     rightPage.style.visibility = 'visible';
@@ -263,33 +281,16 @@
             }
         }
 
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('open');
-        }
-
-        function toggleInfo() {
-            alert("Information about the booklet goes here!");
-        }
-
-        function exitToCover() {
-            if (!document.fullscreenElement) {
-                const cover = document.getElementById('cover-container');
-                const bookletContainer = document.getElementById('booklet-container');
-
-                cover.style.display = 'flex';
-                bookletContainer.style.display = 'none';
-
-                currentPage = 1;
-            }
-        }
-
         function toggleOverlay() {
             const overlay = document.getElementById('overlay-image');
             overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
         }
 
-        document.addEventListener("fullscreenchange", exitToCover);
+        function toggleInfo() {
+            const infoPopup = document.getElementById('infoPopup');
+            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
+        }
+
         window.addEventListener("resize", updatePages);
 
         updatePages();
