@@ -144,32 +144,17 @@
             cursor: pointer;
             z-index: 12;
         }
-        #infoPopup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.8);
+        #darkModeButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 11;
-            display: none;
-        }
-        #infoPopupContent {
-            margin: 20px;
-            text-align: center;
-        }
-        #infoPopupContent h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        #infoPopupContent p {
-            font-size: 18px;
-            line-height: 1.5;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 12;
         }
     </style>
 </head>
@@ -188,6 +173,8 @@
             <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page" loading="lazy">
         </div>
         <button class="arrow right" onclick="nextPage()">&#9654;</button>
+        <!-- Dark Mode Button -->
+        <button id="darkModeButton" onclick="toggleDarkMode()">Dark Mode</button>
         <!-- Overlay Button -->
         <button id="overlayButton" onclick="toggleOverlay()">Overlay</button>
         <!-- Overlay Image -->
@@ -196,19 +183,22 @@
         <button id="menuButton" onclick="toggleMenu()">Menu</button>
         <!-- Information Button -->
         <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
-        <!-- Information Popup -->
-        <div id="infoPopup">
-            <div id="infoPopupContent">
-                <h1>About the Booklet</h1>
-                <p>This interactive booklet explores themes of identity, perception, and societal norms. Use the arrows or swipe gestures to navigate through the pages.</p>
-            </div>
-        </div>
     </div>
 
     <script>
         let currentPage = 1;
         const totalPages = 24;
         let isDarkMode = false;
+        let preloadedImages = [];
+
+        function preloadBookletImages() {
+            for (let i = 1; i <= totalPages; i++) {
+                const img = new Image();
+                img.src = `Re-Viewing the Gaze Catalogue_Page_${String(i).padStart(2, '0')}.png`;
+                preloadedImages.push(img);
+            }
+            console.log("All booklet images preloaded.");
+        }
 
         function enterFullScreen() {
             const cover = document.getElementById('cover-container');
@@ -217,6 +207,10 @@
             cover.style.display = 'none';
             bookletContainer.style.display = 'flex';
 
+            // Preload images before starting the booklet
+            preloadBookletImages();
+
+            // Request full screen
             const elem = document.documentElement;
             if (!document.fullscreenElement) {
                 elem.requestFullscreen().catch((err) => {
@@ -239,14 +233,14 @@
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
                 rightPage.style.visibility = 'hidden';
             } else if (isPortraitMode()) {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.src = preloadedImages[currentPage - 1].src;
                 leftPage.classList.add("portrait");
                 rightPage.style.visibility = 'hidden';
             } else {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.src = preloadedImages[currentPage - 1].src;
                 leftPage.classList.remove("portrait");
                 if (currentPage < totalPages) {
-                    rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
+                    rightPage.src = preloadedImages[currentPage].src;
                     rightPage.style.visibility = 'visible';
                 } else {
                     rightPage.style.visibility = 'hidden';
@@ -273,9 +267,11 @@
             overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
         }
 
-        function toggleInfo() {
-            const infoPopup = document.getElementById('infoPopup');
-            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
+        function toggleDarkMode() {
+            const body = document.body;
+            isDarkMode = !isDarkMode;
+            body.style.background = isDarkMode ? "black" : "white";
+            body.style.color = isDarkMode ? "white" : "black";
         }
 
         window.addEventListener("resize", updatePages);
