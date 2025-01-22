@@ -16,6 +16,14 @@
             overflow: hidden;
             background: #f8f9fa;
         }
+        .booklet-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+        }
         .booklet {
             position: relative;
             perspective: 1000px;
@@ -35,29 +43,37 @@
         .page.right {
             transform-origin: left center;
         }
-        .page.flip-next {
-            transform: rotateY(-180deg);
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 10;
         }
-        .page.flip-prev {
-            transform: rotateY(180deg);
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
         }
-        .navigation {
-            display: flex;
-            gap: 10px;
+        .arrow.left {
+            left: -50px;
+        }
+        .arrow.right {
+            right: -50px;
+        }
+        .fullscreen-button {
             margin-top: 20px;
-        }
-        button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
             border: none;
             background: #007BFF;
-            color: #fff;
+            color: white;
             border-radius: 5px;
-        }
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
         }
         @media (min-width: 768px) {
             .booklet {
@@ -71,14 +87,15 @@
     </style>
 </head>
 <body>
-    <div class="booklet">
-        <img id="left-page" class="page left" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Left Page">
-        <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page">
+    <div class="booklet-container" id="booklet-container">
+        <button class="arrow left" onclick="prevPage()">&#9664;</button>
+        <div class="booklet">
+            <img id="left-page" class="page left" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Left Page">
+            <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page">
+        </div>
+        <button class="arrow right" onclick="nextPage()">&#9654;</button>
     </div>
-    <div class="navigation">
-        <button id="prev-btn" onclick="prevPage()">Previous</button>
-        <button id="next-btn" onclick="nextPage()">Next</button>
-    </div>
+    <button class="fullscreen-button" onclick="toggleFullScreen()">Toggle Fullscreen</button>
 
     <script>
         let currentPage = 1;
@@ -103,10 +120,6 @@
                     rightPage.style.visibility = 'hidden'; // Hide right page if no more pages
                 }
             }
-
-            // Enable or disable buttons based on the current page
-            document.getElementById('prev-btn').disabled = currentPage === 1;
-            document.getElementById('next-btn').disabled = currentPage >= totalPages;
         }
 
         function prevPage() {
@@ -152,6 +165,16 @@
                 prevPage();
             }
         });
+
+        // Toggle Fullscreen Mode
+        function toggleFullScreen() {
+            const elem = document.getElementById('booklet-container');
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
 
         // Initialize the pages
         updatePages();
