@@ -53,7 +53,7 @@
         let currentPage = 1;
         const totalPages = 24; // Total number of pages in the booklet
 
-        // Update the displayed page
+        // Function to update the displayed page
         function updatePage() {
             const image = document.getElementById('booklet-page');
             image.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
@@ -63,6 +63,7 @@
             document.getElementById('next-btn').disabled = currentPage === totalPages;
         }
 
+        // Navigate to the previous page
         function prevPage() {
             if (currentPage > 1) {
                 currentPage--;
@@ -70,5 +71,33 @@
             }
         }
 
+        // Navigate to the next page
         function nextPage() {
             if (currentPage < totalPages) {
+                currentPage++;
+                updatePage();
+            }
+        }
+
+        // Add swipe functionality for mobile devices
+        let startX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].clientX;
+            const deltaX = startX - endX;
+
+            // Swipe threshold to detect gestures
+            const threshold = 50;
+            if (deltaX > threshold && currentPage < totalPages) {
+                nextPage();
+            } else if (deltaX < -threshold && currentPage > 1) {
+                prevPage();
+            }
+        });
+    </script>
+</body>
+</html>
