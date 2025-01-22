@@ -9,7 +9,6 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background: white;
-            color: black;
             overflow: hidden;
         }
         .cover-container {
@@ -79,7 +78,7 @@
             font-size: 24px;
             cursor: pointer;
             padding: 10px;
-            z-index: 12;
+            z-index: 10;
             transition: background 0.3s ease;
         }
         .arrow:hover {
@@ -157,6 +156,20 @@
             font-size: 24px;
             margin: 10px;
         }
+        #infoButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 12;
+        }
         #infoPopup {
             position: fixed;
             top: 0;
@@ -169,7 +182,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            z-index: 11;
+            z-index: 9;
             display: none;
         }
         #infoPopupContent {
@@ -183,6 +196,33 @@
         #infoPopupContent p {
             font-size: 18px;
             line-height: 1.5;
+        }
+        #infoPopupClose {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 12;
+        }
+        #infoPopupClose:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+      #darkModeButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 12;
         }
     </style>
 </head>
@@ -201,16 +241,21 @@
             <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page" loading="lazy">
         </div>
         <button class="arrow right" onclick="nextPage()">&#9654;</button>
-        <!-- Dark Mode Button -->
-        <button id="darkModeButton" onclick="toggleDarkMode()">Dark Mode</button>
         <!-- Overlay Button -->
         <button id="overlayButton" onclick="toggleOverlay()">Overlay</button>
+        <!-- Dark Mode Button -->
+        <button id="darkModeButton" onclick="toggleDarkMode()">Dark Mode</button>
         <!-- Overlay Image -->
         <div id="overlay-image"></div>
         <!-- Menu Button -->
         <button id="menuButton" onclick="toggleMenu()">Menu</button>
         <!-- Information Button -->
         <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
+      <!-- Information Popup -->
+        <div id="infoPopup">
+            <div>
+                <h1>Information</h1>
+                <p>This is some information about the booklet.</p>
         <!-- Menu -->
         <div id="menu">
             <div id="menuContent">
@@ -218,118 +263,106 @@
                 <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE/">Virtual Tour</a>
                 <a href="https://sdcapgshow2024.lboro.ac.uk/?post_type=student&p=336">MA Website</a>
                 <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE_Filter/">Camera Filter</a>
-            </div>
-        </div>
+        <!-- Information Button -->
+        <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
         <!-- Information Popup -->
         <div id="infoPopup">
             <div id="infoPopupContent">
                 <h1>About the Booklet</h1>
                 <p>This interactive booklet explores themes of identity, perception, and societal norms. Use the arrows or swipe gestures to navigate through the pages.</p>
             </div>
+            <button id="infoPopupClose" onclick="toggleInfo()">Close</button>
         </div>
     </div>
 
     <script>
-    let currentPage = 1;
-    const totalPages = 24;
-    let isDarkMode = false;
-
-    function enterFullScreen() {
-        const cover = document.getElementById('cover-container');
-        const bookletContainer = document.getElementById('booklet-container');
-
-        cover.style.display = 'none';
-        bookletContainer.style.display = 'flex';
-
-        const elem = document.documentElement;
-        if (!document.fullscreenElement) {
-            elem.requestFullscreen().catch((err) => {
-                console.error(`Error enabling full-screen mode: ${err.message}`);
-            });
-        }
-
-        updatePages();
-    }
-
-    function isPortraitMode() {
-        return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-    }
-
-    function updatePages() {
-        const leftPage = document.getElementById('left-page');
-        const rightPage = document.getElementById('right-page');
-
-        if (currentPage === 1) {
-            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
-            rightPage.style.visibility = 'hidden';
-        } else if (isPortraitMode()) {
-            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-            leftPage.classList.add("portrait");
-            rightPage.style.visibility = 'hidden';
-        } else {
-            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-            leftPage.classList.remove("portrait");
-            if (currentPage < totalPages) {
-                rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
-                rightPage.style.visibility = 'visible';
-            } else {
-                rightPage.style.visibility = 'hidden';
-            }
-        }
-    }
-
-    function prevPage() {
-        if (currentPage > 1) {
-            currentPage--;
-            updatePages();
-        }
-    }
-
-    function nextPage() {
-        if (currentPage < totalPages) {
-            currentPage++;
-            updatePages();
-        }
-    }
-
-    function toggleOverlay() {
-        const overlay = document.getElementById('overlay-image');
-        overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
-    }
-
-    function toggleDarkMode() {
-        const body = document.body;
-        isDarkMode = !isDarkMode;
-        body.style.background = isDarkMode ? "black" : "white";
-        body.style.color = isDarkMode ? "white" : "black";
-    }
-
-    function toggleMenu() {
-        const menu = document.getElementById('menu');
-        menu.classList.toggle('open');
-    }
-
-    function toggleInfo() {
-        const infoPopup = document.getElementById('infoPopup');
-        infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
-    }
-
-    function exitToCover() {
-        if (!document.fullscreenElement) {
+        let currentPage = 1;
+        const totalPages = 24;
+        let isDarkMode = false;
+      
+        function enterFullScreen() {
             const cover = document.getElementById('cover-container');
             const bookletContainer = document.getElementById('booklet-container');
 
-            cover.style.display = 'flex';
-            bookletContainer.style.display = 'none';
-            currentPage = 1; // Reset to the first page
+            cover.style.display = 'none';
+            bookletContainer.style.display = 'flex';
+
+            const elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch((err) => {
+                    console.error(`Error enabling full-screen mode: ${err.message}`);
+                });
+            }
+
+            updatePages();
         }
-    }
 
-    window.addEventListener("resize", updatePages);
-    document.addEventListener("fullscreenchange", exitToCover);
+        function isPortraitMode() {
+            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+        }
 
-    updatePages();
-</script>
+        function updatePages() {
+            const leftPage = document.getElementById('left-page');
+            const rightPage = document.getElementById('right-page');
 
+            if (currentPage === 1) {
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
+                rightPage.style.visibility = 'hidden';
+            } else if (isPortraitMode()) {
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.classList.add("portrait");
+                rightPage.style.visibility = 'hidden';
+            } else {
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.classList.remove("portrait");
+                if (currentPage < totalPages) {
+                    rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
+                    rightPage.style.visibility = 'visible';
+                } else {
+                    rightPage.style.visibility = 'hidden';
+                }
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePages();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePages();
+            }
+        }
+      
+      function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('open');
+        }
+
+        function toggleOverlay() {
+            const overlay = document.getElementById('overlay-image');
+            overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
+        }
+
+      function toggleDarkMode() {
+            const body = document.body;
+            isDarkMode = !isDarkMode;
+            body.style.background = isDarkMode ? "black" : "white";
+            body.style.color = isDarkMode ? "white" : "black";
+        }
+      
+        function toggleInfo() {
+            const infoPopup = document.getElementById('infoPopup');
+            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        window.addEventListener("resize", updatePages);
+
+        updatePages();
+    </script>
 </body>
 </html>
