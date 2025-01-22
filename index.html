@@ -55,7 +55,7 @@
 
         function updatePage() {
             const image = document.getElementById('booklet-page');
-            image.src = `Fine Art Catalogue (Digital)_Page_${currentPage}.png`;
+            image.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
 
             // Enable or disable buttons based on the current page
             document.getElementById('prev-btn').disabled = currentPage === 1;
