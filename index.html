@@ -1,59 +1,267 @@
-<script>
-    const totalPages = 24; // Total number of pages in the booklet
-    let preloadedImages = [];
-
-    // Preload all booklet images
-    function preloadBookletImages() {
-        for (let i = 1; i <= totalPages; i++) {
-            const img = new Image();
-            img.src = `Re-Viewing the Gaze Catalogue_Page_${String(i).padStart(2, '0')}.png`;
-            preloadedImages.push(img);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Re-Viewing the Gaze Digital Booklet</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+            overflow: hidden;
         }
-        console.log("All booklet images preloaded.");
-    }
+        .cover-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background: black;
+            color: white;
+        }
+        .cover-container img {
+            max-width: 90%;
+            max-height: 80%;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
+        }
+        .start-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 11;
+        }
+        .start-button:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .booklet-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .booklet {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .page {
+            max-width: 45%;
+            max-height: 90%;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            object-fit: contain;
+        }
+        .page.portrait {
+            max-width: 90%;
+            max-height: 95%;
+        }
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 12; /* Increased z-index to ensure it works with overlay */
+            transition: background 0.3s ease;
+        }
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .arrow.left {
+            left: 10px;
+        }
+        .arrow.right {
+            right: 10px;
+        }
+        #overlayButton {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 11;
+        }
+        #overlay-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            background-image: url('Overlay.png');
+            background-size: cover;
+            background-position: center;
+            mix-blend-mode: multiply;
+            z-index: 10; /* Behind arrow buttons */
+        }
+        #menuButton {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 11;
+        }
+        #infoButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 12;
+        }
+        #darkModeButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 12;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Screen -->
+    <div class="cover-container" id="cover-container">
+        <img src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Cover Page">
+        <button class="start-button" onclick="enterFullScreen()">Start the Booklet</button>
+    </div>
 
-    function enterFullScreen() {
-        const cover = document.getElementById('cover-container');
-        const bookletContainer = document.getElementById('booklet-container');
+    <!-- Booklet Display -->
+    <div class="booklet-container" id="booklet-container">
+        <button class="arrow left" onclick="prevPage()">&#9664;</button>
+        <div class="booklet">
+            <img id="left-page" class="page left" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Left Page" loading="lazy">
+            <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page" loading="lazy">
+        </div>
+        <button class="arrow right" onclick="nextPage()">&#9654;</button>
+        <!-- Dark Mode Button -->
+        <button id="darkModeButton" onclick="toggleDarkMode()">Dark Mode</button>
+        <!-- Overlay Button -->
+        <button id="overlayButton" onclick="toggleOverlay()">Overlay</button>
+        <!-- Overlay Image -->
+        <div id="overlay-image"></div>
+        <!-- Menu Button -->
+        <button id="menuButton" onclick="toggleMenu()">Menu</button>
+        <!-- Information Button -->
+        <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
+    </div>
 
-        // Hide the cover and show the booklet
-        cover.style.display = 'none';
-        bookletContainer.style.display = 'flex';
+    <script>
+        let currentPage = 1;
+        const totalPages = 24;
+        let isDarkMode = false;
 
-        // Request full screen
-        const elem = document.documentElement;
-        if (!document.fullscreenElement) {
-            elem.requestFullscreen().catch((err) => {
-                console.error(`Error enabling full-screen mode: ${err.message}`);
-            });
+        function enterFullScreen() {
+            const cover = document.getElementById('cover-container');
+            const bookletContainer = document.getElementById('booklet-container');
+
+            cover.style.display = 'none';
+            bookletContainer.style.display = 'flex';
+
+            const elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch((err) => {
+                    console.error(`Error enabling full-screen mode: ${err.message}`);
+                });
+            }
+
+            updatePages();
         }
 
-        // Preload images before showing the booklet
-        preloadBookletImages();
+        function isPortraitMode() {
+            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+        }
 
-        // Display the first pages
-        updatePages();
-    }
+        function updatePages() {
+            const leftPage = document.getElementById('left-page');
+            const rightPage = document.getElementById('right-page');
 
-    function updatePages() {
-        const leftPage = document.getElementById('left-page');
-        const rightPage = document.getElementById('right-page');
-        const currentPageNumber = currentPage;
-
-        if (currentPage === 1) {
-            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
-            rightPage.style.visibility = 'hidden';
-        } else if (isPortraitMode()) {
-            leftPage.src = preloadedImages[currentPageNumber - 1].src;
-            rightPage.style.visibility = 'hidden';
-        } else {
-            leftPage.src = preloadedImages[currentPageNumber - 1].src;
-            if (currentPage < totalPages) {
-                rightPage.src = preloadedImages[currentPageNumber].src;
-                rightPage.style.visibility = 'visible';
-            } else {
+            if (currentPage === 1) {
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
                 rightPage.style.visibility = 'hidden';
+            } else if (isPortraitMode()) {
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.classList.add("portrait");
+                rightPage.style.visibility = 'hidden';
+            } else {
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                leftPage.classList.remove("portrait");
+                if (currentPage < totalPages) {
+                    rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
+                    rightPage.style.visibility = 'visible';
+                } else {
+                    rightPage.style.visibility = 'hidden';
+                }
             }
         }
-    }
-</script>
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePages();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePages();
+            }
+        }
+
+        function toggleOverlay() {
+            const overlay = document.getElementById('overlay-image');
+            overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
+        }
+
+        function toggleDarkMode() {
+            const body = document.body;
+            isDarkMode = !isDarkMode;
+            body.style.background = isDarkMode ? "black" : "white";
+            body.style.color = isDarkMode ? "white" : "black";
+        }
+
+        window.addEventListener("resize", updatePages);
+
+        updatePages();
+    </script>
+</body>
+</html>
