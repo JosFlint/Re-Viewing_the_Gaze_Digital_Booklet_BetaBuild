@@ -73,7 +73,7 @@
 <body>
     <div class="booklet">
         <img id="left-page" class="page left" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Left Page">
-        <img id="right-page" class="page right" src="Re-Viewing the Gaze Catalogue_Page_02.png" alt="Right Page">
+        <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page">
     </div>
     <div class="navigation">
         <button id="prev-btn" onclick="prevPage()">Previous</button>
@@ -89,15 +89,19 @@
             const leftPage = document.getElementById('left-page');
             const rightPage = document.getElementById('right-page');
             
-            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-            
-            // Ensure we don't exceed the total number of pages
-            if (currentPage < totalPages) {
-                rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
-                rightPage.style.visibility = 'visible';
-            } else {
-                // Hide the right page if it's the last page
+            if (currentPage === 1) {
+                // Show the cover page as a single page
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
                 rightPage.style.visibility = 'hidden';
+            } else {
+                // Show two-page spread for other pages
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                if (currentPage < totalPages) {
+                    rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
+                    rightPage.style.visibility = 'visible';
+                } else {
+                    rightPage.style.visibility = 'hidden'; // Hide right page if no more pages
+                }
             }
 
             // Enable or disable buttons based on the current page
@@ -107,16 +111,24 @@
 
         function prevPage() {
             if (currentPage > 1) {
-                currentPage -= 2; // Move back two pages
-                if (currentPage < 1) currentPage = 1; // Ensure we don't go below page 1
+                if (currentPage === 2) {
+                    // Special case: go back to the cover page
+                    currentPage = 1;
+                } else {
+                    currentPage -= 2; // Move back two pages
+                }
                 updatePages();
             }
         }
 
         function nextPage() {
             if (currentPage < totalPages) {
-                currentPage += 2; // Move forward two pages
-                if (currentPage > totalPages) currentPage = totalPages; // Ensure we don't exceed total pages
+                if (currentPage === 1) {
+                    // Special case: move from cover page to first spread
+                    currentPage = 2;
+                } else {
+                    currentPage += 2; // Move forward two pages
+                }
                 updatePages();
             }
         }
