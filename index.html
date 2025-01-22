@@ -54,6 +54,9 @@
             align-items: center;
             width: 100%;
             height: 100%;
+            transform-origin: center;
+            transform: scale(1); /* Default scale for pinch-to-zoom */
+            transition: transform 0.3s ease; /* Smooth zoom transitions */
         }
         .page {
             max-width: 45%;
@@ -67,14 +70,17 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
             color: white;
             border: none;
             font-size: 24px;
-            padding: 10px;
             cursor: pointer;
-            border-radius: 50%;
+            padding: 10px;
             z-index: 10;
+            transition: background 0.3s ease;
+        }
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.8); /* Darker hover */
         }
         .arrow.left {
             left: 10px;
@@ -102,84 +108,19 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             display: none;
-            background-image: url('Overlay.png'); /* Updated to use local file */
+            background-image: url('Overlay.png');
             background-size: cover;
             background-position: center;
+            mix-blend-mode: multiply;
             z-index: 10;
         }
-        /* Information button */
-        #infoButton {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 12;
-        }
-        /* Information popup */
-        #infoPopup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 9;
-            display: none;
-        }
-        /* Menu button */
-        #menuButton {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 11;
-        }
-        /* Menu */
-        #menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            height: 0;
-            overflow: hidden;
-            transition: height 0.5s ease;
-            z-index: 10;
-        }
-        #menu.open {
-            height: 100vh;
-        }
-        #menuContent {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-        }
-        #menuContent a {
-            color: white;
-            text-decoration: none;
-            font-size: 24px;
-            margin: 10px;
+        @media (max-width: 768px) and (orientation: portrait) {
+            .page {
+                max-width: 90%;
+            }
+            .page.right {
+                display: none; /* Hide the right page in portrait mode */
+            }
         }
     </style>
 </head>
@@ -193,40 +134,25 @@
     <!-- Booklet Display -->
     <div class="booklet-container" id="booklet-container">
         <button class="arrow left" onclick="prevPage()">&#9664;</button>
-        <div class="booklet">
-            <img id="left-page" class="page left" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Left Page">
-            <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page">
+        <div class="booklet" id="booklet">
+            <img id="left-page" class="page left" src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Left Page" loading="lazy">
+            <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page" loading="lazy">
         </div>
         <button class="arrow right" onclick="nextPage()">&#9654;</button>
         <!-- Overlay Button -->
         <button id="overlayButton" onclick="toggleOverlay()">Overlay</button>
-        <!-- Information Button -->
-        <button id="infoButton" onclick="toggleInfo()">&#9432;</button>
-        <!-- Menu Button -->
-        <button id="menuButton" onclick="toggleMenu()">Menu</button>
         <!-- Overlay Image -->
         <div id="overlay-image"></div>
-        <!-- Information Popup -->
-        <div id="infoPopup">
-            <div>
-                <h1>Information</h1>
-                <p>This is some information about the booklet.</p>
-            </div>
-        </div>
-        <!-- Menu -->
-        <div id="menu">
-            <div id="menuContent">
-                <a href="https://josflint.com">Artist Website</a>
-                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE/">Virtual Tour</a>
-                <a href="https://sdcapgshow2024.lboro.ac.uk/?post_type=student&p=336">MA Website</a>
-                <a href="https://josflint.github.io/RE-VIEWING_THE_GAZE_Filter/">Camera Filter</a>
-            </div>
-        </div>
     </div>
 
     <script>
         let currentPage = 1;
         const totalPages = 24; // Total number of pages in the booklet
+
+        // Function to detect portrait mode
+        function isPortraitMode() {
+            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+        }
 
         function enterFullScreen() {
             const cover = document.getElementById('cover-container');
@@ -250,17 +176,23 @@
         function updatePages() {
             const leftPage = document.getElementById('left-page');
             const rightPage = document.getElementById('right-page');
-            
+
             if (currentPage === 1) {
+                // Show the cover page as a single page
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
                 rightPage.style.visibility = 'hidden';
+            } else if (isPortraitMode()) {
+                // Show only the left page in portrait mode
+                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
+                rightPage.style.visibility = 'hidden';
             } else {
+                // Show two-page spread for other pages
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
                 if (currentPage < totalPages) {
                     rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
                     rightPage.style.visibility = 'visible';
                 } else {
-                    rightPage.style.visibility = 'hidden';
+                    rightPage.style.visibility = 'hidden'; // Hide right page if no more pages
                 }
             }
         }
@@ -279,22 +211,22 @@
             }
         }
 
+        // Pinch-to-zoom functionality
+        let scale = 1;
+        const booklet = document.getElementById("booklet");
+        booklet.addEventListener("wheel", (event) => {
+            event.preventDefault();
+            const zoomDelta = -event.deltaY * 0.001; // Adjust zoom speed
+            scale = Math.min(Math.max(scale + zoomDelta, 1), 3); // Limit zoom scale (1x to 3x)
+            booklet.style.transform = `scale(${scale})`;
+        });
+
         function toggleOverlay() {
             const overlay = document.getElementById('overlay-image');
             overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
         }
 
-        function toggleInfo() {
-            const infoPopup = document.getElementById('infoPopup');
-            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('open');
-        }
-
-        // Initialize pages
+        // Initialize the pages
         updatePages();
     </script>
 </body>
