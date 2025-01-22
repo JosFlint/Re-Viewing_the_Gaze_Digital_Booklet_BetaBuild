@@ -78,7 +78,7 @@
             font-size: 24px;
             cursor: pointer;
             padding: 10px;
-            z-index: 10;
+            z-index: 15;
             transition: background 0.3s ease;
         }
         .arrow:hover {
@@ -115,6 +115,7 @@
             background-position: center;
             mix-blend-mode: multiply;
             z-index: 10;
+          pointer-events: none; /* Allows clicks to pass through to the buttons */
         }
         #menuButton {
             position: absolute;
