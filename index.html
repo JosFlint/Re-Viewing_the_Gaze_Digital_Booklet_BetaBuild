@@ -207,10 +207,6 @@
         let currentPage = 1;
         const totalPages = 24;
 
-                // Function to detect portrait mode
-        function isPortraitMode() {
-            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-        }
         function enterFullScreen() {
             const cover = document.getElementById('cover-container');
             const bookletContainer = document.getElementById('booklet-container');
@@ -234,10 +230,6 @@
 
             if (currentPage === 1) {
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
-                rightPage.style.visibility = 'hidden';
-            } else if (isPortraitMode()) {
-                // Show only the left page in portrait mode
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
                 rightPage.style.visibility = 'hidden';
             } else {
                 leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
@@ -288,15 +280,6 @@
             const overlay = document.getElementById('overlay-image');
             overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
         }
-                // Pinch-to-zoom functionality
-        let scale = 1;
-        const booklet = document.getElementById("booklet");
-        booklet.addEventListener("wheel", (event) => {
-            event.preventDefault();
-            const zoomDelta = -event.deltaY * 0.001; // Adjust zoom speed
-            scale = Math.min(Math.max(scale + zoomDelta, 1), 3); // Limit zoom scale (1x to 3x)
-            booklet.style.transform = `scale(${scale})`;
-        });
         
         document.addEventListener("fullscreenchange", exitToCover);
 
