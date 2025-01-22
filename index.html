@@ -278,93 +278,119 @@
     </div>
 
     <script>
-        let currentPage = 1;
-        const totalPages = 24;
-        let isDarkMode = false;
-      
-        function enterFullScreen() {
-            const cover = document.getElementById('cover-container');
-            const bookletContainer = document.getElementById('booklet-container');
+    let currentPage = 1;
+    const totalPages = 24;
+    let isDarkMode = false;
+    const preloadedImages = []; // Array to hold preloaded images
 
-            cover.style.display = 'none';
-            bookletContainer.style.display = 'flex';
-
-            const elem = document.documentElement;
-            if (!document.fullscreenElement) {
-                elem.requestFullscreen().catch((err) => {
-                    console.error(`Error enabling full-screen mode: ${err.message}`);
-                });
-            }
-
-            updatePages();
+    // Function to preload all booklet images
+    function preloadBookletImages() {
+        for (let i = 1; i <= totalPages; i++) {
+            const img = new Image();
+            img.src = `Re-Viewing the Gaze Catalogue_Page_${String(i).padStart(2, '0')}.png`;
+            preloadedImages.push(img); // Store preloaded images in the array
         }
+        console.log("All booklet images preloaded.");
+    }
 
-        function isPortraitMode() {
-            return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
-        }
+    // Function called when the "Start the Booklet" button is pressed
+    function enterFullScreen() {
+        const cover = document.getElementById('cover-container');
+        const bookletContainer = document.getElementById('booklet-container');
 
-        function updatePages() {
-            const leftPage = document.getElementById('left-page');
-            const rightPage = document.getElementById('right-page');
+        cover.style.display = 'none';
+        bookletContainer.style.display = 'flex';
 
-            if (currentPage === 1) {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_01.png`;
-                rightPage.style.visibility = 'hidden';
-            } else if (isPortraitMode()) {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-                leftPage.classList.add("portrait");
-                rightPage.style.visibility = 'hidden';
-            } else {
-                leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-                leftPage.classList.remove("portrait");
-                if (currentPage < totalPages) {
-                    rightPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage + 1).padStart(2, '0')}.png`;
-                    rightPage.style.visibility = 'visible';
-                } else {
-                    rightPage.style.visibility = 'hidden';
-                }
-            }
-        }
+        // Preload images before starting the booklet
+        preloadBookletImages();
 
-        function prevPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePages();
-            }
+        // Request full screen
+        const elem = document.documentElement;
+        if (!document.fullscreenElement) {
+            elem.requestFullscreen().catch((err) => {
+                console.error(`Error enabling full-screen mode: ${err.message}`);
+            });
         }
-
-        function nextPage() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePages();
-            }
-        }
-      
-      function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('open');
-        }
-
-        function toggleOverlay() {
-            const overlay = document.getElementById('overlay-image');
-            overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
-        }
-
-      function toggleDarkMode() {
-            const body = document.body;
-            isDarkMode = !isDarkMode;
-            body.style.background = isDarkMode ? "black" : "white";
-            body.style.color = isDarkMode ? "white" : "black";
-        }
-      
-        function toggleInfo() {
-            const infoPopup = document.getElementById('infoPopup');
-            infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        window.addEventListener("resize", updatePages);
 
         updatePages();
-    </script>
+    }
+
+    // Function to determine if the device is in portrait mode
+    function isPortraitMode() {
+        return window.innerWidth <= 768 && window.matchMedia("(orientation: portrait)").matches;
+    }
+
+    // Function to update the pages displayed
+    function updatePages() {
+        const leftPage = document.getElementById('left-page');
+        const rightPage = document.getElementById('right-page');
+
+        if (currentPage === 1) {
+            leftPage.src = preloadedImages[0].src; // Use preloaded image
+            rightPage.style.visibility = 'hidden';
+        } else if (isPortraitMode()) {
+            leftPage.src = preloadedImages[currentPage - 1].src; // Use preloaded image
+            leftPage.classList.add("portrait");
+            rightPage.style.visibility = 'hidden';
+        } else {
+            leftPage.src = preloadedImages[currentPage - 1].src; // Use preloaded image
+            leftPage.classList.remove("portrait");
+            if (currentPage < totalPages) {
+                rightPage.src = preloadedImages[currentPage].src; // Use preloaded image
+                rightPage.style.visibility = 'visible';
+            } else {
+                rightPage.style.visibility = 'hidden';
+            }
+        }
+    }
+
+    // Functions to navigate pages
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePages();
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePages();
+        }
+    }
+
+    // Toggle menu visibility
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        menu.classList.toggle('open');
+    }
+
+    // Toggle overlay visibility
+    function toggleOverlay() {
+        const overlay = document.getElementById('overlay-image');
+        overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+        const body = document.body;
+        isDarkMode = !isDarkMode;
+        body.style.background = isDarkMode ? "black" : "white";
+        body.style.color = isDarkMode ? "white" : "black";
+    }
+
+    // Toggle information popup
+    function toggleInfo() {
+        const infoPopup = document.getElementById('infoPopup');
+        infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    // Add event listener for resizing to ensure layout adjusts
+    window.addEventListener("resize", updatePages);
+
+    // Initial page update
+    updatePages();
+</script>
+
 </body>
 </html>
