@@ -49,8 +49,6 @@
             overflow: hidden;
         }
         .booklet {
-            position: relative;
-            perspective: 1000px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -59,12 +57,11 @@
         }
         .page {
             max-width: 45%;
-            height: auto;
+            max-height: 90%;
+            margin: 0 5px;
             border: 1px solid #ddd;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.6s ease-in-out;
-            backface-visibility: hidden;
-            transform-origin: right center;
+            object-fit: contain;
         }
         .page.right {
             transform-origin: left center;
@@ -101,8 +98,8 @@
         }
         @media (max-width: 768px) and (orientation: landscape) {
             .page {
-                max-width: 40%;
-                margin: 0 5px;
+                max-width: 45%;
+                max-height: 70%;
             }
         }
     </style>
