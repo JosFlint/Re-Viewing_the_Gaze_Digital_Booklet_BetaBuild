@@ -66,9 +66,10 @@
             object-fit: contain;
         }
         .page.portrait {
-            max-width: 90%;
-            max-height: 95%;
+            width: 100%;
+            height: 100%;
             margin: 0 auto; /* Center the page horizontally */
+            object-fit: contain;
         }
         .arrow {
             position: absolute;
@@ -144,18 +145,6 @@
             cursor: pointer;
             z-index: 12;
         }
-        #darkModeButton {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 12;
-        }
     </style>
 </head>
 <body>
@@ -173,8 +162,6 @@
             <img id="right-page" class="page right" style="visibility: hidden;" alt="Right Page" loading="lazy">
         </div>
         <button class="arrow right" onclick="nextPage()">&#9654;</button>
-        <!-- Dark Mode Button -->
-        <button id="darkModeButton" onclick="toggleDarkMode()">Dark Mode</button>
         <!-- Overlay Button -->
         <button id="overlayButton" onclick="toggleOverlay()">Overlay</button>
         <!-- Overlay Image -->
@@ -267,13 +254,21 @@
             overlay.style.display = overlay.style.display === 'none' || overlay.style.display === '' ? 'block' : 'none';
         }
 
-        function toggleDarkMode() {
-            const body = document.body;
-            isDarkMode = !isDarkMode;
-            body.style.background = isDarkMode ? "black" : "white";
-            body.style.color = isDarkMode ? "white" : "black";
+        function toggleInfo() {
+            alert("Information about the booklet.");
         }
 
+        function exitToCover() {
+            if (!document.fullscreenElement) {
+                const cover = document.getElementById('cover-container');
+                const bookletContainer = document.getElementById('booklet-container');
+
+                cover.style.display = 'flex';
+                bookletContainer.style.display = 'none';
+            }
+        }
+
+        document.addEventListener("fullscreenchange", exitToCover);
         window.addEventListener("resize", updatePages);
 
         updatePages();
