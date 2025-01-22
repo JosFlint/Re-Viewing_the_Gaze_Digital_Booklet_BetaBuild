@@ -399,21 +399,6 @@ function handleFullscreenChange() {
     }
 }
         
-// Add event listener for fullscreen changes
-document.addEventListener('fullscreenchange', handleFullscreenChange);
-// Function to enter full-screen mode and start the booklet
-function enterFullScreen() {
-    const cover = document.getElementById('cover-container');
-    const bookletContainer = document.getElementById('booklet-container');
-    cover.style.display = 'none';
-    bookletContainer.style.display = 'flex';
-    // Request full-screen mode
-    const elem = document.documentElement;
-    if (!document.fullscreenElement) {
-        elem.requestFullscreen().catch((err) => {
-            console.error(`Error enabling full-screen mode: ${err.message}`);
-        });
-    }
     updatePages(); // Update pages when the booklet starts
 </script>
 
