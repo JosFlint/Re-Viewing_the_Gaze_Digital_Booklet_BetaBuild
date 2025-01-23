@@ -240,7 +240,7 @@
             z-index: 12;
         }
         /* Center-Bottom Button Styling */
-#centerBottomButton {
+    #centerBottomButton {
     position: fixed;
     bottom: 20px;
     left: 50%;
@@ -295,8 +295,20 @@
         <div id="overlay-image"></div>
         <!-- Menu Button -->
         <button id="menuButton" onclick="toggleMenu()">Menu</button>
+        
         <!-- Center-Bottom Button -->
-        <button id="centerBottomButton" onclick="centerButtonClick()">Aa</button>
+        <button id="centerBottomButton" onclick="ShowPopup()">Aa</button>
+        <!-- Pop-Up Modal -->
+<div id="popupModal" class="popup-modal">
+  <div class="popup-content">
+    <span class="close-button" onclick="closePopup()">&times;</span>
+    <h2>Information</h2>
+    <div class="popup-body" id="popupContent">
+      <!-- Content will dynamically update here -->
+    </div>
+  </div>
+</div>
+        
       <!-- Menu -->
         <div id="menu">
             <div id="menuContent">
@@ -488,7 +500,36 @@ function handleFullscreenChange() {
         currentPage = 1; // Reset to the first page
     }
 }
+// Dynamic content for each page
+const pageContent = {
+    1: "Welcome to the home page! Here you can find an overview of what we offer.",
+    2: "This is the About Us page. Learn more about our mission and values here.",
+    3: "On the Services page, you can explore the various options we provide.",
+    4: "Get in touch with us through the Contact Us page!",
+    5: "This is some generic information. Enjoy your stay!"
+};
 
+// Function to determine the current page and set the content
+function setPopupContent() {
+    // Example logic for determining the current page
+    const currentPage = document.body.dataset.page || "default"; // Assume `data-page` attribute is set on the <body>
+    const content = pageContent[currentPage] || pageContent.default; // Fallback to default content
+    document.getElementById("popupContent").innerText = content;
+}
+
+// Show the pop-up
+function showPopup() {
+    setPopupContent(); // Set content dynamically before showing the pop-up
+    document.getElementById("popupModal").style.display = "block";
+}
+
+// Close the pop-up
+function closePopup() {
+    document.getElementById("popupModal").style.display = "none";
+}
+
+
+        
 updatePages(); // Update pages when the booklet starts
 
         
