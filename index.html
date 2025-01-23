@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, initial-scale=1, maximum-scale=5"> /* allow for mobile zoom */
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, initial-scale=1, maximum-scale=5">
     <title>Re-Viewing the Gaze Digital Booklet</title>
     <style>
         body {
@@ -317,7 +317,7 @@
         // Request full screen
         const elem = document.documentElement;
         if (!document.fullscreenElement) {
-            elem.requestFullscreen().catch((err) => {
+            elem.requestFullscreen({ navigationUI: 'hide' }).catch((err) => {
                 console.error(`Error enabling full-screen mode: ${err.message}`);
             });
         }
