@@ -67,7 +67,13 @@
         .page.portrait {
             max-width: 90%;
             max-height: 95%;
+            margin: 0; /* Remove any default margins */
         }
+        .booklet-container.portrait-mode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
         .arrow {
             position: absolute;
             top: 50%;
@@ -325,15 +331,18 @@
     function updatePages() {
         const leftPage = document.getElementById('left-page');
         const rightPage = document.getElementById('right-page');
+        const bookletContainer = document.getElementById('booklet-container');
 
         if (currentPage === 1) {
             leftPage.src = preloadedImages[0].src; // Use preloaded image
             rightPage.style.visibility = 'hidden';
         } else if (isPortraitMode()) {
+            bookletContainer.classList.add("portrait-mode");
             leftPage.src = preloadedImages[currentPage - 1].src; // Use preloaded image
             leftPage.classList.add("portrait");
             rightPage.style.visibility = 'hidden';
         } else {
+            bookletContainer.classList.remove("portrait-mode");
             leftPage.src = preloadedImages[currentPage - 1].src; // Use preloaded image
             leftPage.classList.remove("portrait");
             if (currentPage < totalPages) {
