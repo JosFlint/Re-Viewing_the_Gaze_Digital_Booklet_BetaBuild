@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, initial-scale=1, maximum-scale=5"> /* allow for mobile zoom */
     <title>Re-Viewing the Gaze Digital Booklet</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: white;
-            overflow: hidden;
+            overflow: auto; /* Allows scrolling and zooming */
+            touch-action: pan-x pan-y; /* Enables panning in both directions */
         }
         .cover-container {
             display: flex;
@@ -47,7 +48,8 @@
             position: relative;
             width: 100%;
             height: 100vh;
-            overflow: hidden;
+            overflow: auto; /* Allows scrolling */
+            touch-action: pan-x pan-y; /* Enables zooming on touch devices */
         }
         .booklet {
             display: flex;
