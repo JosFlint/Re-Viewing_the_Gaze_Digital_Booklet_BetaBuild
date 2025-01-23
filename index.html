@@ -239,27 +239,37 @@
             cursor: pointer;
             z-index: 12;
         }
-        /* Center Button Styling */
-        #centerButton {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 15px 30px;
-            font-size: 16px;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            display: none; /* Hidden by default */
-            z-index: 20;
-        }
-        @media (max-width: 768px) and (orientation: portrait) {
-            #centerButton {
-                display: block; /* Show only in portrait mode */
-            }
-        }
+        /* Center-Bottom Button Styling */
+#centerBottomButton {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 12;
+}
+
+#centerBottomButton:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Show the button only in portrait mode */
+@media (max-width: 768px) and (orientation: portrait) {
+    #centerBottomButton {
+        display: flex;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -268,8 +278,7 @@
         <img src="Re-Viewing the Gaze Catalogue_Page_01.png" alt="Cover Page">
         <button class="start-button" onclick="enterFullScreen()">Start the Booklet</button>
     </div>
-    <!-- Centre Button -->
-    <button id="centerButton"></button>
+
     <!-- Booklet Display -->
     <div class="booklet-container" id="booklet-container">
         <button class="arrow left" onclick="prevPage()">&#9664;</button>
@@ -286,6 +295,8 @@
         <div id="overlay-image"></div>
         <!-- Menu Button -->
         <button id="menuButton" onclick="toggleMenu()">Menu</button>
+        <!-- Center-Bottom Button -->
+        <button id="centerBottomButton" onclick="centerButtonClick()">&#9432;</button>
       <!-- Menu -->
         <div id="menu">
             <div id="menuContent">
@@ -389,20 +400,7 @@ function updatePages() {
         }
     }
 }
-// Function to update the text of the center button based on the current page
-        function updateButtonText() {
-            const centerButton = document.getElementById("centerButton");
-            const pageTexts = {
-                1: "Welcome to the Booklet",
-                2: "Discover the Gaze",
-                3: "Exploring Identity",
-                // Add text for other pages
-                24: "Thank you for reading!",
-            };
 
-            // Update text based on the current page
-            centerButton.textContent = pageTexts[currentPage] || "Page " + currentPage;
-        }
 function nextPage() {
     if (isPortraitMode()) {
         // Portrait Mode: Move forward by one page
@@ -450,6 +448,9 @@ window.addEventListener('resize', () => {
         const menu = document.getElementById('menu');
         menu.classList.toggle('open');
     }
+    function centerButtonClick() {
+    alert('This is the center-bottom button!');
+}
 
     // Toggle overlay visibility
     function toggleOverlay() {
