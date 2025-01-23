@@ -328,26 +328,26 @@
     }
 
     // Function to update the pages displayed
-    function updatePages() {
+function updatePages() {
     const leftPage = document.getElementById('left-page');
     const rightPage = document.getElementById('right-page');
     const bookletContainer = document.getElementById('booklet-container');
 
-    // Single-page cover
+    // Handle single-page cover
     if (currentPage === 1) {
         leftPage.src = preloadedImages[0].src; // Cover page
         leftPage.style.visibility = 'visible';
-        rightPage.style.visibility = 'hidden'; // Hide the right page
+        rightPage.style.visibility = 'hidden'; // Hide right page
         return;
     }
 
     if (isPortraitMode()) {
-        // Portrait Mode: Show only one page
+        // Portrait mode: Show one page at a time
         leftPage.src = preloadedImages[currentPage - 1].src; // Current page
         leftPage.style.visibility = 'visible';
         rightPage.style.visibility = 'hidden'; // Always hide right page
     } else {
-        // Landscape Mode: Two-page spread
+        // Landscape mode: Show two-page spread
         leftPage.src = preloadedImages[currentPage - 1].src; // Left page
         leftPage.style.visibility = 'visible';
 
@@ -360,45 +360,47 @@
     }
 }
 
-
-
 function nextPage() {
     if (isPortraitMode()) {
-        // Move forward by one page in portrait mode
+        // Portrait Mode: Move forward by one page
         if (currentPage < totalPages) {
             currentPage++;
             updatePages();
         }
     } else {
-        // Move forward by two pages in landscape mode
-        if (currentPage < totalPages - 1) {
-            currentPage += 2;
-            updatePages();
+        // Landscape Mode: Move forward by two pages
+        if (currentPage === 1) {
+            currentPage++; // Move from cover to first spread
+        } else if (currentPage < totalPages - 1) {
+            currentPage += 2; // Move forward by two pages
+        } else if (currentPage === totalPages - 1) {
+            currentPage++; // Handle edge case: last single page in landscape
         }
+        updatePages();
     }
 }
 
 function prevPage() {
     if (isPortraitMode()) {
-        // Move back by one page in portrait mode
+        // Portrait Mode: Move backward by one page
         if (currentPage > 1) {
             currentPage--;
             updatePages();
         }
     } else {
-        // Move back by two pages in landscape mode
-        if (currentPage > 2) {
-            currentPage -= 2;
-            updatePages();
-        } else if (currentPage === 2) {
-            // Special case: Return to the cover
-            currentPage = 1;
-            updatePages();
+        // Landscape Mode: Move backward by two pages
+        if (currentPage === 2) {
+            currentPage--; // Handle edge case: return to the cover
+        } else if (currentPage > 2) {
+            currentPage -= 2; // Move backward by two pages
         }
+        updatePages();
     }
 }
 
-
+window.addEventListener('resize', () => {
+    updatePages(); // Adjust the layout when resizing the window or rotating the device
+});
 
     // Toggle menu visibility
     function toggleMenu() {
@@ -442,9 +444,6 @@ function handleFullscreenChange() {
         currentPage = 1; // Reset to the first page
     }
 }
-        window.addEventListener('resize', () => {
-    updatePages(); // Re-render the pages when window size or orientation changes
-});
 
 updatePages(); // Update pages when the booklet starts
 
