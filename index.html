@@ -328,44 +328,56 @@
     }
 
     // Function to update the pages displayed
-    function updatePages() {
-        const leftPage = document.getElementById('left-page');
-        const rightPage = document.getElementById('right-page');
-        const bookletContainer = document.getElementById('booklet-container');
+function updatePages() {
+    const leftPage = document.getElementById('left-page');
+    const rightPage = document.getElementById('right-page');
+    const bookletContainer = document.getElementById('booklet-container');
 
-        if (currentPage === 1) {
-            leftPage.src = preloadedImages[0].src; // Use preloaded image
-            rightPage.style.visibility = 'hidden';
-        } else if (isPortraitMode()) {
-            leftPage.src = `Re-Viewing the Gaze Catalogue_Page_${String(currentPage).padStart(2, '0')}.png`;
-            rightPage.style.visibility = 'hidden';
-        } else {
-            bookletContainer.classList.remove("portrait-mode");
-            leftPage.src = preloadedImages[currentPage - 1].src; // Use preloaded image
-            leftPage.classList.remove("portrait");
-            if (currentPage < totalPages) {
-                rightPage.src = preloadedImages[currentPage].src; // Use preloaded image
-                rightPage.style.visibility = 'visible';
-            } else {
-                rightPage.style.visibility = 'hidden';
-            }
-        }
-    }
+    // Handle single-page cover
+    if (currentPage === 1) {
+        leftPage.src = preloadedImages[0].src; // Display the cover
+        leftPage.style.visibility = 'visible';
+        rightPage.style.visibility = 'hidden'; // Hide the right page
+    } else if (isPortraitMode()) {
+        // Portrait mode: Show one page at a time
+        leftPage.src = preloadedImages[currentPage - 1].src; // Show the current page
+        leftPage.style.visibility = 'visible';
+        rightPage.style.visibility = 'hidden'; // Always hide right page
+    } else {
+        // Landscape mode: Show two-page spread
+        leftPage.src = preloadedImages[currentPage - 1].src; // Left page
+        leftPage.style.visibility = 'visible';
 
-    // Functions to navigate pages
-    function prevPage() {
-        if (currentPage > 1) {
-            currentPage--;
-            updatePages();
-        }
-    }
-
-    function nextPage() {
         if (currentPage < totalPages) {
-            currentPage++;
-            updatePages();
+            rightPage.src = preloadedImages[currentPage].src; // Right page
+            rightPage.style.visibility = 'visible';
+        } else {
+            rightPage.style.visibility = 'hidden'; // Hide right page at the end
         }
     }
+}
+
+
+function nextPage() {
+    // Move forward by 1 page if on the cover, otherwise by 2 pages
+    if (currentPage === 1) {
+        currentPage++; // Move to the second page after the cover
+    } else if (currentPage < totalPages - 1) {
+        currentPage += 2; // Move forward by two pages
+    }
+    updatePages();
+}
+
+function prevPage() {
+    // Move backward by 1 page if on the second page, otherwise by 2 pages
+    if (currentPage === 2) {
+        currentPage--; // Return to the cover
+    } else if (currentPage > 1) {
+        currentPage -= 2; // Move backward by two pages
+    }
+    updatePages();
+}
+
 
     // Toggle menu visibility
     function toggleMenu() {
