@@ -328,23 +328,26 @@
     }
 
     // Function to update the pages displayed
-function updatePages() {
+    function updatePages() {
     const leftPage = document.getElementById('left-page');
     const rightPage = document.getElementById('right-page');
     const bookletContainer = document.getElementById('booklet-container');
 
-    // Handle single-page cover
+    // Single-page cover
     if (currentPage === 1) {
-        leftPage.src = preloadedImages[0].src; // Display the cover
+        leftPage.src = preloadedImages[0].src; // Cover page
         leftPage.style.visibility = 'visible';
         rightPage.style.visibility = 'hidden'; // Hide the right page
-    } else if (isPortraitMode()) {
-        // Portrait mode: Show one page at a time
-        leftPage.src = preloadedImages[currentPage - 1].src; // Show the current page
+        return;
+    }
+
+    if (isPortraitMode()) {
+        // Portrait Mode: Show only one page
+        leftPage.src = preloadedImages[currentPage - 1].src; // Current page
         leftPage.style.visibility = 'visible';
         rightPage.style.visibility = 'hidden'; // Always hide right page
     } else {
-        // Landscape mode: Show two-page spread
+        // Landscape Mode: Two-page spread
         leftPage.src = preloadedImages[currentPage - 1].src; // Left page
         leftPage.style.visibility = 'visible';
 
@@ -358,25 +361,43 @@ function updatePages() {
 }
 
 
+
 function nextPage() {
-    // Move forward by 1 page if on the cover, otherwise by 2 pages
-    if (currentPage === 1) {
-        currentPage++; // Move to the second page after the cover
-    } else if (currentPage < totalPages - 1) {
-        currentPage += 2; // Move forward by two pages
+    if (isPortraitMode()) {
+        // Move forward by one page in portrait mode
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePages();
+        }
+    } else {
+        // Move forward by two pages in landscape mode
+        if (currentPage < totalPages - 1) {
+            currentPage += 2;
+            updatePages();
+        }
     }
-    updatePages();
 }
 
 function prevPage() {
-    // Move backward by 1 page if on the second page, otherwise by 2 pages
-    if (currentPage === 2) {
-        currentPage--; // Return to the cover
-    } else if (currentPage > 1) {
-        currentPage -= 2; // Move backward by two pages
+    if (isPortraitMode()) {
+        // Move back by one page in portrait mode
+        if (currentPage > 1) {
+            currentPage--;
+            updatePages();
+        }
+    } else {
+        // Move back by two pages in landscape mode
+        if (currentPage > 2) {
+            currentPage -= 2;
+            updatePages();
+        } else if (currentPage === 2) {
+            // Special case: Return to the cover
+            currentPage = 1;
+            updatePages();
+        }
     }
-    updatePages();
 }
+
 
 
     // Toggle menu visibility
@@ -421,6 +442,9 @@ function handleFullscreenChange() {
         currentPage = 1; // Reset to the first page
     }
 }
+        window.addEventListener('resize', () => {
+    updatePages(); // Re-render the pages when window size or orientation changes
+});
 
 updatePages(); // Update pages when the booklet starts
 
