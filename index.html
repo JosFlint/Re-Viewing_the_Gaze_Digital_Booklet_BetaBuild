@@ -274,7 +274,7 @@
     text-align: center; /* Center text alignment */
     z-index: 9;
     overflow-y: auto; /* Enable vertical scrolling */
-    padding: 50px 0px 70px; /* Add padding: top, horizontal, and bottom */
+    padding: 50px 20px 70px; /* Add padding: top, horizontal, and bottom */
     box-sizing: border-box; /* Ensure padding is included in height/width */
 }
 
@@ -460,6 +460,12 @@ function updatePages() {
         } else {
             rightPage.style.visibility = 'hidden'; // Hide right page at the end
         }
+    }
+    
+    // If the popup is open, update its content
+    const centerBottomPopup = document.getElementById("centerBottomPopup");
+    if (centerBottomPopup.style.display === "flex") {
+        updatecenterBottomPopupContent();
     }
 }
 
