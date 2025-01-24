@@ -376,11 +376,11 @@
     </div>
 
 <!-- CenterBottomButton -->
-        <button id="centerBottomButton" onclick="toggleccenterBottomPopup()">Aa</button>
+        <button id="centerBottomButton" onclick="togglecenterBottomPopup()">Aa</button>
         
       <!-- Center Bottom Popup -->
 <div id="centerBottomPopup" style="display: none;">
-    <div id="centerBottomPopup">
+    <div id="centerBottomPopupContent">
         <!-- Content will be dynamically updated -->
         <h1>Information</h1>
         <p>Welcome to the interactive booklet!</p>
@@ -472,8 +472,8 @@ const pageTexts = {
 };
 
 // Function to update popup content
-function updatecenterBottomPopup() {
-    const centerBottomPopup = document.getElementById("centerBottomPopup");
+function centerBottomPopupContent() {
+    const centerBottomPopupContent = document.getElementById("centerBottomPopupContent");
     const content = pageTexts[currentPage] || pageTexts.default;
     centerBottomPopup.innerHTML = `
         <h1>Information</h1>
@@ -487,7 +487,7 @@ function togglecenterBottomPopup() {
     const isHidden = centerBottomPopup.style.display === "none" || centerBottomPopup.style.display === "";
     
     if (isHidden) {
-        updatecenterBottomPopup(); // Update content when opening the popup
+        centerBottomPopupContent(); // Update content when opening the popup
         centerBottomPopup.style.display = "flex"; // Show popup
     } else {
         centerBottomPopup.style.display = "none"; // Hide popup
