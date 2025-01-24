@@ -376,10 +376,12 @@
     </div>
 
 <!-- CenterBottomButton -->
-        <button id="centerBottomButton" onclick="togglecentrebottominfo()">Aa</button>
-      <!-- CenterBottom Popup -->
-        <div id="centerBottomPopupContent">
-        <!-- The content will be dynamically updated here -->
+        <button id="centerBottomButton" onclick="togglecCenterBottomPopupContent()">Aa</button>
+        
+      <!-- Center Bottom Popup -->
+<div id="centerBottomPopup" style="display: none;">
+    <div id="centerBottomPopupContent">
+        <!-- Content will be dynamically updated -->
         <h1>Information</h1>
         <p>Welcome to the interactive booklet!</p>
     </div>
@@ -466,10 +468,10 @@ const pageTexts = {
     2: "Page 2: Discover more about the artist's journey.",
     3: "Page 3: Learn about the inspirations behind the project.",
     4: "Page 4: Explore the technical aspects of the artwork.",
-    // Add content for additional pages as needed
     default: "This page has no specific information available."
 };
 
+// Function to update popup content
 function updateCenterBottomPopupContent() {
     const centerBottomPopupContent = document.getElementById("centerBottomPopupContent");
     const content = pageTexts[currentPage] || pageTexts.default;
@@ -478,6 +480,19 @@ function updateCenterBottomPopupContent() {
         <p>${content}</p>
     `;
 }
+
+// Function to toggle the visibility of the popup
+function toggleCenterBottomPopup() {
+    const centerBottomPopup = document.getElementById("centerBottomPopup");
+    const isHidden = centerBottomPopup.style.display === "none" || centerBottomPopup.style.display === "";
+    
+    if (isHidden) {
+        updateCenterBottomPopupContent(); // Update content when opening the popup
+        centerBottomPopup.style.display = "flex"; // Show popup
+    } else {
+        centerBottomPopup.style.display = "none"; // Hide popup
+    }
+}
         
 function nextPage() {
     if (isPortraitMode()) {
@@ -485,7 +500,6 @@ function nextPage() {
         if (currentPage < totalPages) {
             currentPage++;
             updatePages();
-            updateCenterBottomPopupContent(); // Update popup content
         }
     } else {
         // Landscape Mode: Move forward by two pages
@@ -497,7 +511,6 @@ function nextPage() {
             currentPage++; // Handle edge case: last single page in landscape
         }
         updatePages();
-        updateCenterBottomPopupContent(); // Update popup content
     }
 }
 
@@ -507,7 +520,6 @@ function prevPage() {
         if (currentPage > 1) {
             currentPage--;
             updatePages();
-            updateCenterBottomPopupContent(); // Update popup content
         }
     } else {
         // Landscape Mode: Move backward by two pages
@@ -517,7 +529,6 @@ function prevPage() {
             currentPage -= 2; // Move backward by two pages
         }
         updatePages();
-        updateCenterBottomPopupContent(); // Update popup content
     }
 }
 
