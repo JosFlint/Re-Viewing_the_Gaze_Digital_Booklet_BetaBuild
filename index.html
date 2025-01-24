@@ -378,60 +378,12 @@
 <!-- CenterBottomButton -->
         <button id="centerBottomButton" onclick="togglecentrebottominfo()">Aa</button>
       <!-- CenterBottom Popup -->
-        <div id="centerBottomPopup">
-            <div>
-                <h1>Information</h1>
-                <p>test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test <br>
-                    test
-            </p>
-        <!-- CenterBottomButton -->
-        <button id="centerBottomButton" onclick="togglecentrebottominfo()">Aa</button>
+        <div id="centerBottomPopupContent">
+        <!-- The content will be dynamically updated here -->
+        <h1>Information</h1>
+        <p>Welcome to the interactive booklet!</p>
     </div>
-            </div>
+</div>
 
     <script>
     let currentPage = 1;
@@ -509,12 +461,31 @@ function updatePages() {
     }
 }
 
+const pageTexts = {
+    1: "Welcome to the first page! This is an introduction to the booklet.",
+    2: "Page 2: Discover more about the artist's journey.",
+    3: "Page 3: Learn about the inspirations behind the project.",
+    4: "Page 4: Explore the technical aspects of the artwork.",
+    // Add content for additional pages as needed
+    default: "This page has no specific information available."
+};
+
+function updateCenterBottomPopupContent() {
+    const centerBottomPopupContent = document.getElementById("centerBottomPopupContent");
+    const content = pageTexts[currentPage] || pageTexts.default;
+    centerBottomPopupContent.innerHTML = `
+        <h1>Information</h1>
+        <p>${content}</p>
+    `;
+}
+        
 function nextPage() {
     if (isPortraitMode()) {
         // Portrait Mode: Move forward by one page
         if (currentPage < totalPages) {
             currentPage++;
             updatePages();
+            updateCenterBottomPopupContent(); // Update popup content
         }
     } else {
         // Landscape Mode: Move forward by two pages
@@ -526,6 +497,7 @@ function nextPage() {
             currentPage++; // Handle edge case: last single page in landscape
         }
         updatePages();
+        updateCenterBottomPopupContent(); // Update popup content
     }
 }
 
@@ -535,6 +507,7 @@ function prevPage() {
         if (currentPage > 1) {
             currentPage--;
             updatePages();
+            updateCenterBottomPopupContent(); // Update popup content
         }
     } else {
         // Landscape Mode: Move backward by two pages
@@ -544,6 +517,7 @@ function prevPage() {
             currentPage -= 2; // Move backward by two pages
         }
         updatePages();
+        updateCenterBottomPopupContent(); // Update popup content
     }
 }
 
