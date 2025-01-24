@@ -259,8 +259,47 @@
     z-index: 12;
 }
 
-#centerBottomButton:hover {
-    background: rgba(0, 0, 0, 0.8);
+    #centerBottomPopup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 9;
+            display: none; /* Keep it visible by default */
+        }
+        #centerBottomPopupContent {
+            margin: 20px;
+            text-align: center;
+        }
+        #centerBottomPopupContent h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        #centerBottomPopupContent p {
+            font-size: 18px;
+            line-height: 1.5;
+        }
+        #centerBottomPopupClose {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 12;
+        }
+        #centerBottomPopupClose:hover {
+            background: rgba(255, 255, 255, 0.8);
 }
 
 /* Show the button only in portrait mode */
