@@ -265,16 +265,16 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.9);
     color: white;
     display: none;
     flex-direction: column; /* Stack content vertically */
     align-items: center; /* Center horizontally */
     justify-content: flex-start; /* Start from the top */
     text-align: center; /* Center text alignment */
-    z-index: 9;
+    z-index: 11;
     overflow-y: auto; /* Enable vertical scrolling */
-    padding: 50px 20px 70px; /* Add padding: top, horizontal, and bottom */
+    padding: 50px 10px 70px; /* Add padding: top, horizontal, and bottom */
     box-sizing: border-box; /* Ensure padding is included in height/width */
 }
 
@@ -478,10 +478,10 @@ const pageTexts = {
 };
 
 // Function to update popup content
-function centerBottomPopupContent() {
+function updatecenterBottomPopupContent() {
     const centerBottomPopupContent = document.getElementById("centerBottomPopupContent");
     const content = pageTexts[currentPage] || pageTexts.default;
-    centerBottomPopup.innerHTML = `
+    centerBottomPopupContent.innerHTML = `
         <h1>Information</h1>
         <p>${content}</p>
     `;
@@ -493,7 +493,7 @@ function togglecenterBottomPopup() {
     const isHidden = centerBottomPopup.style.display === "none" || centerBottomPopup.style.display === "";
     
     if (isHidden) {
-        centerBottomPopupContent(); // Update content when opening the popup
+        updatecenterBottomPopupContent(); // Update content when opening the popup
         centerBottomPopup.style.display = "flex"; // Show popup
     } else {
         centerBottomPopup.style.display = "none"; // Hide popup
