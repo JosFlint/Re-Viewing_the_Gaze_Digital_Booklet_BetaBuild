@@ -535,10 +535,12 @@ window.addEventListener('resize', () => {
         const infoPopup = document.getElementById('infoPopup');
         infoPopup.style.display = infoPopup.style.display === 'none' ? 'flex' : 'none';
     }
+        
     // Toggle Centre Bottom popup
     function togglecentrebottominfo() {
         const centerBottomPopup = document.getElementById('centerBottomPopup');
         centerBottomPopup.style.display = centerBottomPopup.style.display === 'none' ? 'flex' : 'none';
+    }
 
     // Add event listener for resizing to ensure layout adjusts
     window.addEventListener("resize", updatePages);
